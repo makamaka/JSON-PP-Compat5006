@@ -1,4 +1,4 @@
-package JSON::PP::Compat5006
+package JSON::PP::Compat5006;
 
 use 5.006;
 use strict;
@@ -74,8 +74,8 @@ BEGIN {
 
     *JSON::PPdev::JSON_PP_encode_ascii      = \&_encode_ascii;
     *JSON::PPdev::JSON_PP_encode_latin1     = \&_encode_latin1;
-    *JSON::PPdev::JSON_PP_decode_surrogates = \&JSON::PP::_decode_surrogates;
-    *JSON::PPdev::JSON_PP_decode_unicode    = \&JSON::PP::_decode_unicode;
+    *JSON::PPdev::JSON_PP_decode_surrogates = \&JSON::PPdev::_decode_surrogates;
+    *JSON::PPdev::JSON_PP_decode_unicode    = \&JSON::PPdev::_decode_unicode;
 
     unless ( defined &B::SVp_NOK ) { # missing in B module.
         eval q{ sub B::SVp_NOK () { 0x02000000; } };
@@ -91,7 +91,7 @@ sub _encode_ascii {
             $_ <= 127 ?
                 chr($_) :
             $_ <= 65535 ?
-                sprintf('\u%04x', $_) : sprintf('\u%x\u%x', JSON::PP::_encode_surrogates($_));
+                sprintf('\u%04x', $_) : sprintf('\u%x\u%x', JSON::PPdev::_encode_surrogates($_));
         } _unpack_emu($_[0])
     );
 }
@@ -103,7 +103,7 @@ sub _encode_latin1 {
             $_ <= 255 ?
                 chr($_) :
             $_ <= 65535 ?
-                sprintf('\u%04x', $_) : sprintf('\u%x\u%x', JSON::PP::_encode_surrogates($_));
+                sprintf('\u%04x', $_) : sprintf('\u%x\u%x', JSON::PPdev::_encode_surrogates($_));
         } _unpack_emu($_[0])
     );
 }
