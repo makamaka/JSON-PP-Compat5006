@@ -1,11 +1,18 @@
-package JSON::PP56;
+package JSON::PP::Compat5006
 
 use 5.006;
 use strict;
 
+BEGIN {
+    if ( $] >= 5.008 ) {
+        require Carp;
+        die( "JSON::PP::Compat5006 is for Perl 5.6" );
+    }
+}
+
 my @properties;
 
-$JSON::PP56::VERSION = '1.08';
+$JSON::PP::Compat5006::VERSION = '1.09';
 
 BEGIN {
 
@@ -65,10 +72,10 @@ BEGIN {
     }
 
 
-    *JSON::PP::JSON_PP_encode_ascii      = \&_encode_ascii;
-    *JSON::PP::JSON_PP_encode_latin1     = \&_encode_latin1;
-    *JSON::PP::JSON_PP_decode_surrogates = \&JSON::PP::_decode_surrogates;
-    *JSON::PP::JSON_PP_decode_unicode    = \&JSON::PP::_decode_unicode;
+    *JSON::PPdev::JSON_PP_encode_ascii      = \&_encode_ascii;
+    *JSON::PPdev::JSON_PP_encode_latin1     = \&_encode_latin1;
+    *JSON::PPdev::JSON_PP_decode_surrogates = \&JSON::PP::_decode_surrogates;
+    *JSON::PPdev::JSON_PP_decode_unicode    = \&JSON::PP::_decode_unicode;
 
     unless ( defined &B::SVp_NOK ) { # missing in B module.
         eval q{ sub B::SVp_NOK () { 0x02000000; } };
@@ -143,32 +150,6 @@ sub _is_valid_utf8 {
 }
 
 
-sub JSON::PP::incr_parse {
-    local $Carp::CarpLevel = 1;
-    ( $_[0]->{_incr_parser} ||= JSON::PP::IncrParser->new )->incr_parse( @_ );
-}
-
-
-sub JSON::PP::incr_text : lvalue {
-    $_[0]->{_incr_parser} ||= JSON::PP::IncrParser->new;
-
-    if ( $_[0]->{_incr_parser}->{incr_parsing} ) {
-        Carp::croak("incr_text can not be called when the incremental parser already started parsing");
-    }
-    $_[0]->{_incr_parser}->{incr_text};
-}
-
-
-sub JSON::PP::incr_skip {
-    ( $_[0]->{_incr_parser} ||= JSON::PP::IncrParser->new )->incr_skip;
-}
-
-
-sub JSON::PP::incr_reset {
-    ( $_[0]->{_incr_parser} ||= JSON::PP::IncrParser->new )->incr_reset;
-}
-
-
 1;
 __END__
 
@@ -176,7 +157,7 @@ __END__
 
 =head1 NAME
 
-JSON::PP56 - Helper module in using JSON::PP in Perl 5.6
+JSON::PP::Compat5006 - Helper module in using JSON::PP in Perl 5.6
 
 =head1 DESCRIPTION
 
@@ -189,7 +170,7 @@ Makamaka Hannyaharamitu, E<lt>makamaka[at]cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007-2009 by Makamaka Hannyaharamitu
+Copyright 2007-2010 by Makamaka Hannyaharamitu
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
