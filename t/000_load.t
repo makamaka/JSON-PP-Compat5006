@@ -1,8 +1,10 @@
-BEGIN { $| = 1; print "1..1\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use strict;
+use Test::More;
+BEGIN { plan tests => 1 };
 
-BEGIN { $ENV{PERL_JSON_BACKEND} = 0; }
+SKIP: {
+    skip "This test is for Perl 5.6.", 1 if ( $] >= 5.008 );
+    ok( eval { require JSON::PP::Compat5006 } );
+}
 
-use JSON::PP;
-$loaded = 1;
-print "ok 1\n";
+
